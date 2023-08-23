@@ -56,17 +56,17 @@ But, before calling it, some parameters have to be set through other functions i
 
 8<br>
 &#9; &#9; Call set_wanted_spare_range() while passing through a list that looks like this: <br>
-&#9; &#9; &#9; ["min length allowed as spare", "max length allowed as spare"] <br>
+&#9; &#9; &#9; [ "min length allowed as spare", "max length allowed as spare" ] <br>
 &#9; &#9; This function sets the max and min length that can be considered as designated spare. <br>
 <br>
 
 9<br>
 &#9; &#9; Call init_slot_occupied() while passing through a dictionary that looks like this: <br>
 &#9; &#9; &#9; {"Slot 1" : 0, "Slot 2 " : 0, "Slot 3" : 0, "Slot 4" : 0 ... } <br>
-&#9; &#9; This function initializes the occupation of all the slots you created in set_slot_range() as 0, meaning its empty. <br>
+&#9; &#9; This function initializes the occupation of all the slots you created in set_slot_range() as 0, meaning it's empty. <br>
 <br>
 
-Finally, by calling solve(), the program calculates the best way to cut the order from a fixed-length original stock. <br>
+Finally, by calling solve(), the program calculates the best way to process the order from a fixed-length original stock. <br>
 If you wish to display the result in the terminal, use display_result(). <br>
 <br>
 
