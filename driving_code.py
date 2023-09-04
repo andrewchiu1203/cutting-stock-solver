@@ -1,4 +1,4 @@
-import heavy_stock_solver
+import heavy_stock_solver as hss
 
 # # #  parameter sample  # # #
 # 56 1.7 -> 1.2
@@ -47,36 +47,36 @@ slot_occupied = {"A":0, "A2":0, "B":0, "B2":0, "C1":0, "C2":0, "D1":0, "D2":0, "
 
 def main():
     ''' [[stock_num 1, length 1], [stock_num 2, length 2] ...] '''
-    heavy_stock_solver.set_required_length(required_length)
+    hss.set_required_length(required_length)
 
     ''' [[stock_num 1, quantity 1], [stock_num 2, quantity 2] ...] '''
-    heavy_stock_solver.set_required_number(required_number)
+    hss.set_required_number(required_number)
 
     ''' {"Slot name 1" : [min length, max length], "Slot name2 " : [min length, max length] ... } '''
-    heavy_stock_solver.set_slot_range(slot_range)
+    hss.set_slot_range(slot_range)
 
     ''' {"slot name 1" : "slot that combine with it", "slot name 2" : "slot that can combined with it" ...} ''' 
-    heavy_stock_solver.set_combined_slot_range(combined_slot_range)
+    hss.set_combined_slot_range(combined_slot_range)
 
     ''' integer length in meter '''
-    heavy_stock_solver.set_original_stock_len(original_stock_len)
+    hss.set_original_stock_len(original_stock_len)
 
     ''' integer quantity that dertermines max stock quantity throuch machine at once '''
-    heavy_stock_solver.set_machine_max_throughput(machine_max_throughput)
+    hss.set_machine_max_throughput(machine_max_throughput)
 
     ''' {-1 : "spare len 1", -2 : "spare len 2", -3: : "spare len 3", -4 : "spare len 4"} '''
-    heavy_stock_solver.set_wanted_spare_len(wanted_spare_len)
+    hss.set_wanted_spare_len(wanted_spare_len)
 
     ''' ["min length allowed as spare", "max length allowed as spare"] '''
-    heavy_stock_solver.set_wanted_spare_range(wanted_spare_range)
+    hss.set_wanted_spare_range(wanted_spare_range)
 
     ''' {"Slot 1" : 0, "Slot 2 " : 0, "Slot 3" : 0 ... } '''
-    heavy_stock_solver.init_slot_occupied(slot_occupied)
+    hss.init_slot_occupied(slot_occupied)
 
-    heavy_stock_solver.to_use_wanted_spare(True)
+    hss.to_use_wanted_spare(True)
 
-    heavy_stock_solver.solve()
-    heavy_stock_solver.display_result()
+    hss.solve()
+    hss.display_result()
 
 if __name__ == "__main__":
     main()

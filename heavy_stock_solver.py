@@ -1,4 +1,4 @@
-import math, copy, itertools, random
+import math, copy, itertools
 from operator import itemgetter
 
 required_length = []
@@ -12,7 +12,7 @@ wanted_spare_len = {}
 wanted_spare_range = []
 slot_occupied = {}
 result, spare_result = [], {}
-total_input_len, total_waste_len, order_total_len= 0, 0, 0
+total_input_len, total_waste_len = 0, 0
 use_wanted_spare = True
 
 def to_use_wanted_spare(_use_wanted_spare):
@@ -85,7 +85,7 @@ def make_group(_required_length, _required_number, _original_stock_len):
         if len(by_similar_len[i]) == 0:
             del by_similar_len[i]
 
-    # Replace the key with the avg of every len in each item
+    # Replace the key with the avg of every stock group in each item
     tmp = {}
     len_sum = 0
 
@@ -242,11 +242,11 @@ def get_avg_group(_len_to_fill, _by_similar_len, r = 3, len_repeated_max = 2, re
         comb_to_look.append(by_similar_len[j])
     
     for j in comb_to_look:
-        tmp1 = []
+        tmp = []
         for k in j:
-            tmp1.append(k[0][1])
+            tmp.append(k[0][1])
 
-        len_to_look.append(tmp1)
+        len_to_look.append(tmp)
     
     return len_to_look, comb_to_look
 
@@ -309,6 +309,7 @@ def get_slot_of_stock_num(_stock_num, _by_stock_num, _id = None):
 
     return slot
 
+# Xn [stock num, stock id, remain quantity, num of stock through]
 def get_Xn(_comb_result, _comb_result_stock_num, _comb_result_num, _comb_result_id):
     comb_result = _comb_result
     comb_result_stock_num = _comb_result_stock_num
@@ -317,14 +318,15 @@ def get_Xn(_comb_result, _comb_result_stock_num, _comb_result_num, _comb_result_
 
     x, x_id_and_index, Xn = [], {}, []
     for j in range(len(comb_result)):
+        current_id = comb_result_id[j]
         try:
-            x_id_and_index[comb_result_id[j]]
+            x_id_and_index[current_id]
         except:
             x.append(1)
-            x_id_and_index[comb_result_id[j]] = j
+            x_id_and_index[current_id] = j
         else:
             x.append(0)
-            x[x_id_and_index[comb_result_id[j]]] += 1
+            x[x_id_and_index[current_id]] += 1
     
     tmp = []
     for j in range(len(comb_result)):
@@ -353,9 +355,9 @@ def update_by_stock_num_and_by_similar_length(_by_stock_num, _by_similar_len, _X
     for j in range(len(Xn)):
         if Xn[j][0] != -1:
             for k in by_stock_num[Xn[j][0]]:
-                if k[2] == Xn[j][1]:
+                if k[2] == Xn[j][1]: # main id == id
                     current_len = k[0]
-                    k[1] = Xn[j][2]
+                    k[1] = Xn[j][2] # old quantity = new quantity
                     break
             
             tmp = {}
@@ -363,9 +365,9 @@ def update_by_stock_num_and_by_similar_length(_by_stock_num, _by_similar_len, _X
                 if math.floor(avg) == math.floor(current_len):
                     tmp[avg] = []
                     for k in range(len(group)):
-                        if group[k][2] == Xn[j][1]:
+                        if group[k][2] == Xn[j][1]: # main id == id
                             if Xn[j][2] > 0:
-                                group[k][1][1] = Xn[j][2]
+                                group[k][1][1] = Xn[j][2] # old quantity = new quantity
                                 tmp[avg].append(group[k])
                         else:
                             tmp[avg].append(group[k])
@@ -379,7 +381,8 @@ def update_by_stock_num_and_by_similar_length(_by_stock_num, _by_similar_len, _X
 
             tmp = {}
             len_sum = 0
-
+             
+            # recalculate avg of each group
             for value in by_similar_len.values():
                 for i in value:
                     len_sum += i[0][1]
@@ -396,27 +399,29 @@ def update_spare_result(_comb_result, _comb_result_id, _Xn, _spare_result):
     comb_result_id = _comb_result_id
     spare_result = _spare_result
     Xn = _Xn
-    len_sum = 0
+    stock_quantity_through = Xn[0][3]
 
     for i in range(len(comb_result)):
         if comb_result_id[i] < 0:
+            spare_len = comb_result[i]
             try:
-                spare_result[comb_result[i]]
+                spare_result[spare_len]
             except:
-                spare_result[comb_result[i]] = Xn[0][3]
+                spare_result[spare_len] = stock_quantity_through
             else:
-                spare_result[comb_result[i]] += Xn[0][3]
-        len_sum += comb_result[i]
+                spare_result[spare_len] += stock_quantity_through
     
     return spare_result
 
 def process_slot_and_spare_info():
     global slot_range
 
-    for k, v in slot_range.items():
-        slot_range[k].append(round(abs(slot_range[k][1] - slot_range[k][0]), 2))
+    for slot_alpha in slot_range.keys():
+        slot_range[slot_alpha].append(round(abs(slot_range[slot_alpha][1] - slot_range[slot_alpha][0]), 2))
+
     slot_range = dict(sorted(slot_range.items(), key=lambda item: item[1][2]))
     if wanted_spare_len == {}:
+        # There will always be 4 spare len in this code with id from -1 to -4
         wanted_spare_len[-1] = wanted_spare_range[0]
         wanted_spare_len[-2] = round(wanted_spare_len[-1] + ((wanted_spare_range[1] - wanted_spare_range[0])/3), 2)
         wanted_spare_len[-3] = round(wanted_spare_len[-2] + ((wanted_spare_range[1] - wanted_spare_range[0])/3), 2)
@@ -424,8 +429,8 @@ def process_slot_and_spare_info():
 
 def display_result():
     total_wanted_spare_len = 0
-    for k, v in spare_result.items():
-        total_wanted_spare_len += round(k * v, 2)
+    for spare_len, spare_quantity in spare_result.items():
+        total_wanted_spare_len += round(spare_len * spare_quantity, 2)
         total_wanted_spare_len = round(total_wanted_spare_len, 2)
 
     print("Designated spare:")
@@ -439,11 +444,41 @@ def display_result():
     print("Spare perc:        ", round(total_wanted_spare_len/total_input_len * 100, 2), "%")
 
     all_slot_cleared = True
-    for c in slot_occupied.values():
-        if c != 0:
+    for slot in slot_occupied.values():
+        if slot != 0:
             all_slot_cleared = False
             break
     print("All slots cleared: ", all_slot_cleared)
+
+def count_total_order_len(_by_stock_num):
+    order_total_len = 0
+    by_stock_num = _by_stock_num
+    for combs in by_stock_num.values():
+        for c in combs:
+            order_total_len += c[0] * c[1]
+    order_total_len = round(order_total_len, 2)
+
+    return order_total_len
+
+def fill_comb_result_paral_list(_comb_result, _comb_to_look):
+    comb_result = _comb_result
+    comb_to_look = _comb_to_look
+
+    comb_result_stock_num, comb_result_num, comb_result_id = [], [], []
+    for j in comb_result:
+        search_finished = False
+        for k in comb_to_look:
+            for l in k:
+                if j == l[0][1]:
+                        comb_result_stock_num.append(l[0][0])
+                        comb_result_num.append(l[1][1])
+                        comb_result_id.append(l[2])
+                        search_finished = True
+                        break
+            if search_finished:
+                break
+    
+    return comb_result_stock_num, comb_result_num, comb_result_id
 
 def _solve():
     process_slot_and_spare_info()
@@ -452,16 +487,15 @@ def _solve():
            result, spare_result, total_input_len, total_waste_len, order_total_len, use_wanted_spare
     
     by_stock_num, by_similar_len = make_group(required_length, required_number, original_stock_len)
-    
-    for stock_num, combs in by_stock_num.items():
-        for c in combs:
-            order_total_len += c[0] * c[1]
-    order_total_len = round(order_total_len, 2)
+    # by_stock_num   -> {stock_num : [[len, remain, id], [...] ], stock_num : [[len, remain, id], [...] ]}
+    # by_similar_lrn -> {avg_len: [ [ [stock_num, len], [stock_num, remain], id ], [...] ], avg_len: [...]}
+
+    order_total_len = count_total_order_len(by_stock_num)
 
     max_loop_count = 1000
-    for main_loop_count in range(max_loop_count):
-        # prev_by_similar_len = copy.deepcopy(by_similar_len)
-        for key, value in by_stock_num.items(): # key is stock num, value is comb
+    for _ in range(max_loop_count):
+
+        for key, stock_comb in by_stock_num.items(): # key is stock num, value is comb
 
             slot = get_slot_of_stock_num(key, by_stock_num)
 
@@ -477,42 +511,36 @@ def _solve():
             else:
                 continue
 
-            for i in value:
-                # If remain num is 0, it's finished
-                if i[1] == 0:
+            for stock_comb_from_main_loop in stock_comb:
+                # stock_comb_from_main_loop itself is a list where [0] -> stock len
+                #                                                  [1] -> quantity remain
+                #                                                  [2] -> stock id
+
+                if stock_comb_from_main_loop[1] == 0:
                     continue
                 
                 # Fill by_similar_len with spare
-                len_to_fill = original_stock_len - i[0]
+                len_to_fill = original_stock_len - stock_comb_from_main_loop[0]
                 by_similar_len_extend = copy.deepcopy(by_similar_len)
 
-                if use_wanted_spare == 1:
-                    for k, j in wanted_spare_len.items():
+                if use_wanted_spare:
+                    for spare_id, spare_len in wanted_spare_len.items():
                         try:
-                            by_similar_len_extend[j] = by_similar_len_extend[j]
+                            by_similar_len_extend[spare_len] = by_similar_len_extend[spare_len]
                         except:
                             # Stock num & id negative means its wanted spare
-                            by_similar_len_extend[j] = [[[-1, j], [-1, 1000000000], k]]
+                            # Large quantity of spare len -> assumed infinite
+                            by_similar_len_extend[spare_len] = [[[-1, spare_len], [-1, 1000000000], spare_id]]
 
                 len_to_look, comb_to_look = get_avg_group(
                     len_to_fill, by_similar_len_extend)
+                
                 comb_result, comb_result_comp, max_comb_len = make_combination(
-                    original_stock_len, len_to_look, i[0])
+                    original_stock_len, len_to_look, stock_comb_from_main_loop[0])
 
-                # Fill comb_result paral list
-                comb_result_stock_num, comb_result_num, comb_result_id = [], [], []
-                for j in comb_result:
-                    search_finished = False
-                    for k in comb_to_look:
-                        for l in k:
-                            if j == l[0][1]:
-                                comb_result_stock_num.append(l[0][0])
-                                comb_result_num.append(l[1][1])
-                                comb_result_id.append(l[2])
-                                search_finished = True
-                                break
-                        if search_finished:
-                            break
+                comb_result_stock_num, comb_result_num, comb_result_id = fill_comb_result_paral_list(
+                    comb_result, comb_to_look)
+
                 
                 # See if there's room in slots
                 has_room= True
@@ -526,7 +554,9 @@ def _solve():
                         dealing_spare = True
 
                     for p in pair_slot:
-                        if slot_occupied[p] == 0 or slot_occupied[p] == comb_result_stock_num[j] or slot_occupied[p] == comb_result_id[j]:
+                        if slot_occupied[p] == 0 or slot_occupied[p] == comb_result_stock_num[j] \
+                                                 or slot_occupied[p] == comb_result_id[j]:
+
                             if dealing_spare:
                                 tmp[p] = comb_result_id[j]
                             else:
@@ -540,48 +570,42 @@ def _solve():
                 if has_room:
                     slot_occupied = tmp
 
+                # If no room, force use stock in slots to make comb
                 if not has_room:
-                    # Force use stock in slots to make comb
                     by_similar_len_extend, tmp = {}, {}
                     len_sum = 0
 
-                    for k, j in by_similar_len.items():
-                        by_similar_len_extend[k] = []
-                        for l in j:
-                            if l[0][0] in slot_occupied.values():
-                                by_similar_len_extend[k].append(l)
+                    for avg_key, len_group in by_similar_len.items():
+                        by_similar_len_extend[avg_key] = []
+                        for l in len_group:
+                            current_stock_num = l[0][0]
+                            if current_stock_num in slot_occupied.values():
+                                by_similar_len_extend[avg_key].append(l)
 
-                    for value in by_similar_len_extend.values():
-                        if len(value) != 0:
-                            for l in value:
-                                len_sum += l[0][1]
-                            avg = round(len_sum/len(value), 2)
-                            tmp[avg] = value
+                    for len_group in by_similar_len_extend.values():
+                        if len(len_group) != 0:
+                            for l in len_group:
+                                current_stock_len = l[0][1]
+                                len_sum += current_stock_len
+                            avg = round(len_sum/len(len_group), 2)
+                            tmp[avg] = len_group
                             len_sum = 0
                     by_similar_len_extend = tmp
 
-                    len_to_look_extend, comb_to_look = get_avg_group(len_to_fill, by_similar_len_extend)
-                    comb_result, comb_result_comp, max_comb_len = make_combination(original_stock_len, len_to_look_extend, i[0])
+                    len_to_look_extend, comb_to_look = get_avg_group(
+                        len_to_fill, by_similar_len_extend)
+                    
+                    comb_result, comb_result_comp, max_comb_len = make_combination(
+                        original_stock_len, len_to_look_extend, stock_comb_from_main_loop[0])
 
-                    comb_result_stock_num, comb_result_num, comb_result_id = [], [], []
-                    for j in comb_result:
-                        search_finished = False
-                        for k in comb_to_look:
-                            for l in k:
-                                if j == l[0][1]:
-                                    comb_result_stock_num.append(l[0][0])
-                                    comb_result_num.append(l[1][1])
-                                    comb_result_id.append(l[2])
-                                    search_finished = True
-                                    break
-                            if search_finished:
-                                break
+                    comb_result_stock_num, comb_result_num, comb_result_id = fill_comb_result_paral_list(
+                        comb_result, comb_to_look)
 
                 # Complete the comb with current length and finded length
-                comb_result += [i[0]]
+                comb_result += [stock_comb_from_main_loop[0]]
                 comb_result_stock_num += [key]
-                comb_result_num += [i[1]]
-                comb_result_id += [i[2]]
+                comb_result_num += [stock_comb_from_main_loop[1]]
+                comb_result_id += [stock_comb_from_main_loop[2]]
 
                 # Solve logistic
                 Xn = get_Xn(comb_result_comp, comb_result_stock_num, comb_result_num, comb_result_id)
@@ -589,25 +613,25 @@ def _solve():
                 spare_result = update_spare_result(comb_result_comp, comb_result_id, Xn, spare_result)
 
                 # Write result and format it nicely
-                total_input_len += Xn[0][3] * original_stock_len
+                original_stock_needed = Xn[0][3]
+                total_input_len += original_stock_needed * original_stock_len
                 total_waste_len += round(original_stock_len - sum(comb_result_comp), 2) * Xn[0][3]
 
                 len_to_fill = round(original_stock_len - sum(comb_result_comp), 2)
                 if len_to_fill >= 0:
                     len_to_fill = abs(len_to_fill)
                 format_result_waste = str(len_to_fill) + " x " + str(Xn[0][3])
-                original_stock_needed = Xn[0][3]
                 current_slot_situation = copy.deepcopy(slot_occupied)
 
                 for j in range(len(comb_result_id)):
                     if comb_result_id[j] < 0:
                         comb_result_comp[j] = str(comb_result_comp[j])
-                if Xn[0][3] != 0:
+                if original_stock_needed != 0:
                     result.append((comb_result_comp, original_stock_needed, format_result_waste, current_slot_situation))
                 
                 # Display result
-                last = result[-1]
-                print("\n{:<30}".format(str(last[0])) + "x{:<5}".format(last[1]) + "waste: {:<15}".format(last[2]))
+                # last = result[-1]
+                # print("\n{:<30}".format(str(last[0])) + "x{:<5}".format(last[1]) + "waste: {:<15}".format(last[2]))
                 # print(slot_occupied, "\n")
 
             # Clear up slots if a stock is finished
@@ -616,23 +640,25 @@ def _solve():
                 if stock_num > 0:
                     stock_finished = True
                     for i in by_stock_num[stock_num]:
-                        if i[1] > 0:
+                        quantity_remained = i[1]
+                        if quantity_remained > 0:
                             stock_finished = False
                             break
                     if stock_finished:
                         slot_occupied[slot_alpha] = 0
 
-                        for k, v in slot_occupied.items():
-                            if v < 0:
-                                slot_occupied[k] = 0
+                        for _slot_alpha, _stock_num in slot_occupied.items():
+                            if _stock_num < 0:
+                                slot_occupied[_slot_alpha] = 0
 
         if len(by_similar_len.keys()) == 0:
             break
     
-    # Print extra
+    # Print extra pieces of stock produced
     for stock_num, remain in by_stock_num.items():
         for r in remain:
-            if r[1] < 0:
+            quantity_remained = r[1]
+            if quantity_remained < 0:
                 print("\nLength", r[0], "from #", stock_num, "has", abs(r[1]), "extra")
     print()
 
@@ -644,5 +670,8 @@ def solve():
         
         print("Error: Parameters not set properly")
         quit()
-
-    _solve()
+    try:
+        _solve()
+    except:
+        print("Error: An unknown error occured in the algorithm 'solve()'")
+        quit()
