@@ -442,6 +442,7 @@ def display_result():
     print("Total spare len:   ", total_wanted_spare_len)
     print("Waste perc:        ", round(total_waste_len/total_input_len * 100, 2), "%")
     print("Spare perc:        ", round(total_wanted_spare_len/total_input_len * 100, 2), "%")
+    print("Total steps needed:", len(result))
 
     all_slot_cleared = True
     for slot in slot_occupied.values():
@@ -480,22 +481,22 @@ def fill_comb_result_paral_list(_comb_result, _comb_to_look):
     
     return comb_result_stock_num, comb_result_num, comb_result_id
 
-def _solve():
+def _solve(display_step = False):
     process_slot_and_spare_info()
 
     global combined_slot_range, wanted_spare_len, wanted_spare_range, slot_occupied, \
            result, spare_result, total_input_len, total_waste_len, order_total_len, use_wanted_spare
     
     by_stock_num, by_similar_len = make_group(required_length, required_number, original_stock_len)
-    # by_stock_num   -> {stock_num : [[len, remain, id], [...] ], stock_num : [[len, remain, id], [...] ]}
-    # by_similar_lrn -> {avg_len: [ [ [stock_num, len], [stock_num, remain], id ], [...] ], avg_len: [...]}
+    # by_stock_num   -> {stock_num : [[len, remain, id], [...] ], stock_num : [[len, remain, id], [...] ], ...}
+    # by_similar_lrn -> {avg_len: [ [ [stock_num, len], [stock_num, remain], id ], [...] ], avg_len: [...], ...}
 
     order_total_len = count_total_order_len(by_stock_num)
 
     max_loop_count = 1000
     for _ in range(max_loop_count):
 
-        for key, stock_comb in by_stock_num.items(): # key is stock num, value is comb
+        for key, stock_comb in by_stock_num.items(): # key is stock num, stock_comb please see line 490
 
             slot = get_slot_of_stock_num(key, by_stock_num)
 
@@ -512,18 +513,18 @@ def _solve():
                 continue
 
             for stock_comb_from_main_loop in stock_comb:
-                # stock_comb_from_main_loop itself is a list where [0] -> stock len
-                #                                                  [1] -> quantity remain
-                #                                                  [2] -> stock id
+                # stock_comb_from_main_loop is a list where [0] -> stock len
+                #                                           [1] -> quantity remain
+                #                                           [2] -> stock id
 
                 if stock_comb_from_main_loop[1] == 0:
                     continue
                 
-                # Fill by_similar_len with spare
                 len_to_fill = original_stock_len - stock_comb_from_main_loop[0]
                 by_similar_len_extend = copy.deepcopy(by_similar_len)
 
                 if use_wanted_spare:
+                    # Fill by_similar_len with spare
                     for spare_id, spare_len in wanted_spare_len.items():
                         try:
                             by_similar_len_extend[spare_len] = by_similar_len_extend[spare_len]
@@ -548,9 +549,12 @@ def _solve():
                 for j in range(len(comb_result_stock_num)):
                     dealing_spare = False
                     if comb_result_id[j] >= 0:
-                        pair_slot = get_slot_of_stock_num(comb_result_stock_num[j], by_stock_num)
+                        pair_slot = get_slot_of_stock_num(
+                            comb_result_stock_num[j], by_stock_num)
                     else:
-                        pair_slot = get_slot_of_stock_num(comb_result_stock_num[j], by_stock_num, comb_result_id[j])
+                        pair_slot = get_slot_of_stock_num(
+                            comb_result_stock_num[j], by_stock_num, comb_result_id[j])
+                        
                         dealing_spare = True
 
                     for p in pair_slot:
@@ -608,15 +612,20 @@ def _solve():
                 comb_result_id += [stock_comb_from_main_loop[2]]
 
                 # Solve logistic
-                Xn = get_Xn(comb_result_comp, comb_result_stock_num, comb_result_num, comb_result_id)
-                by_stock_num, by_similar_len = update_by_stock_num_and_by_similar_length(by_stock_num, by_similar_len, Xn)
-                spare_result = update_spare_result(comb_result_comp, comb_result_id, Xn, spare_result)
+                Xn = get_Xn(
+                    comb_result_comp, comb_result_stock_num, comb_result_num, comb_result_id)
+                
+                by_stock_num, by_similar_len = update_by_stock_num_and_by_similar_length(
+                    by_stock_num, by_similar_len, Xn)
+                
+                spare_result = update_spare_result(
+                    comb_result_comp, comb_result_id, Xn, spare_result)
 
-                # Write result and format it nicely
                 original_stock_needed = Xn[0][3]
                 total_input_len += original_stock_needed * original_stock_len
                 total_waste_len += round(original_stock_len - sum(comb_result_comp), 2) * Xn[0][3]
 
+                # Write result and format it nicely
                 len_to_fill = round(original_stock_len - sum(comb_result_comp), 2)
                 if len_to_fill >= 0:
                     len_to_fill = abs(len_to_fill)
@@ -626,13 +635,19 @@ def _solve():
                 for j in range(len(comb_result_id)):
                     if comb_result_id[j] < 0:
                         comb_result_comp[j] = str(comb_result_comp[j])
+
                 if original_stock_needed != 0:
-                    result.append((comb_result_comp, original_stock_needed, format_result_waste, current_slot_situation))
+                    result.append(
+                        (comb_result_comp, original_stock_needed, format_result_waste, current_slot_situation)
+                    )
                 
                 # Display result
-                # last = result[-1]
-                # print("\n{:<30}".format(str(last[0])) + "x{:<5}".format(last[1]) + "waste: {:<15}".format(last[2]))
-                # print(slot_occupied, "\n")
+                if display_step:
+                    last = result[-1]
+                    print( "\n{:<30}".format(str(last[0])) + \
+                           "x{:<5}".format(last[1]) + \
+                           "waste: {:<15}".format(last[2]) )
+                    print(slot_occupied, "\n")
 
             # Clear up slots if a stock is finished
             stock_finished = False
@@ -664,14 +679,14 @@ def _solve():
 
     return result
 
-def solve():
+def solve(display_step = False):
     if required_length == [] or required_number == [] or slot_range == {} or combined_slot_range == {}\
         or original_stock_len == 0 or machine_max_throughput == 0 or wanted_spare_range == [] or slot_occupied == {}:
         
         print("Error: Parameters not set properly")
         quit()
     try:
-        _solve()
+        _solve(display_step)
     except:
         print("Error: An unknown error occured in the algorithm 'solve()'")
         quit()
