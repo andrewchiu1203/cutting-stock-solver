@@ -93,7 +93,6 @@ def knapsack_solver_brute_force(comb_list: list, r = 4, len_repeated_max = 3, le
     print(combination)
 
 # Driving code for testing
-
 # comb_list = [2.3, 3.6, 4.1, 2.7, 4.5, 5.4, 5.7, 6.4, 7.8, 8.6, 8.9]
 # knapsack_solver_brute_force(comb_list)
 
