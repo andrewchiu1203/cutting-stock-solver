@@ -481,7 +481,7 @@ def fill_comb_result_paral_list(_comb_result, _comb_to_look):
     
     return comb_result_stock_num, comb_result_num, comb_result_id
 
-def _solve(display_step = False):
+def _solve(display_step = False, max_loop_count = 1000):
     process_slot_and_spare_info()
 
     global combined_slot_range, wanted_spare_len, wanted_spare_range, slot_occupied, \
@@ -493,7 +493,7 @@ def _solve(display_step = False):
 
     order_total_len = count_total_order_len(by_stock_num)
 
-    max_loop_count = 1000
+    # Set a loop count limit ensuring no edge cases that cause infinite loop to happen
     for _ in range(max_loop_count):
 
         for key, stock_comb in by_stock_num.items(): # key is stock num, stock_comb please see line 490

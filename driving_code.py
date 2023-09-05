@@ -81,6 +81,7 @@ def main():
 
     hss.to_use_wanted_spare(True)
 
+    # result = hss.solve(display_step=False)
     hss.solve(display_step=False)
     hss.display_result()
 
