@@ -82,7 +82,7 @@ def main():
     hss.to_use_wanted_spare(True)
 
     # result = hss.solve(display_step=False)
-    hss.solve(display_step=False)
+    hss.solve(display_step=True)
     hss.display_result()
 
 if __name__ == "__main__":

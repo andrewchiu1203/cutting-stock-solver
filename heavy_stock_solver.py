@@ -647,7 +647,7 @@ def _solve(display_step = False, max_loop_count = 1000):
                     print( "\n{:<30}".format(str(last[0])) + \
                            "x{:<5}".format(last[1]) + \
                            "waste: {:<15}".format(last[2]) )
-                    print(slot_occupied, "\n")
+                    # print(slot_occupied, "\n")
 
             # Clear up slots if a stock is finished
             stock_finished = False
