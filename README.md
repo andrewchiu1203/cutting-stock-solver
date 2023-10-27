@@ -8,7 +8,7 @@ But, before calling it, some parameters have to be set through other functions i
 For how to set them, explanations are in driving_code.py <br>
 <br>
 
-After that, by calling solve(), the program calculates the best way to process the order from a fixed-length original stock. <br>
+Next, by calling solve(), the program calculates the best way to process the order from a fixed-length original stock. <br>
 If you wish to display the result in the terminal, use display_result(). <br>
 <br>
 
@@ -16,3 +16,5 @@ The solve() function returns a list with the format:<br>
 &#9; [ [ len, len, len ... ], number of uncut stock passed through, wasted length of current combination ] <br>
 &#9; (If '' is seen around a length, it's a reserved spare instead of a stock for the order) <br>
 <br>
+
+Here's a video demo of the driving code: https://youtu.be/od1y2nE8zGk
