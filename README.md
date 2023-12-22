@@ -13,23 +13,23 @@ This is a personal coding project that I thought would be interesting to do when
 ### How to Setup
 - In sample_data.py, set up the 2 PARALLEL LIST (important).
 
-    For list `required_length`, follow
+    For list `required_length`, follow<br>
     `[ [ order number, length ], [ order number, length ], ... ]`
 
-    For list `required_number`, follow
+    For list `required_number`, follow<br>
     `[ [ order number, quantity ], [ order number, quantity ], ... ]`
 
 - In sample_data.py, set up 1 list and 2 dictionary related to slot room.
 
-    For list `slot_range`, follow
-    `["slot name" : [ min allowed length, max allowed length ], "slot name" : [ min allowed length, max allowed length ], ... ]`
+    For list `slot_range`, follow<br>
+    `["slot name" : [ min allowed length, max allowed length ],<br>"slot name" : [ min allowed length, max allowed length ], ... ]`
 
-    For dict `slot_occupied`, follow
-	`{ "slot name" : 0, "slot name" : 0, "slot name" : 0, ... }`<br>
+    For dict `slot_occupied`, follow<br>
+   `{ "slot name" : 0, "slot name" : 0, "slot name" : 0, ... }`<br>
     *Note: All slot names in `slot_range` need to be in this dict with value init as 0.*
 
     For dict `combined_slot_range`, follow
-	`{ "slot_name1 slot_name2" : [ min allowed length, max allowed length ],"slot_name1 slot_name2" : [ min allowed length, max allowed length ], ... }`<br>
+	`{ "slot_name1 slot_name2" : [ min allowed length, max allowed length ],<br>"slot_name1 slot_name2" : [ min allowed length, max allowed length ], ... }`<br>
     *Note: The 2 slot names with 1 space in between are the slots that can be combined.*<br>
     *Note: If you do not wish to have any slots combined, leave this dict empty.*
 
