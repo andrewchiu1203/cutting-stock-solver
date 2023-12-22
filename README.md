@@ -47,7 +47,7 @@ This is a personal coding project that I thought would be interesting to do when
 
     The `accurate_level` determines how long the program searches for the best length combination for each cut. It works between 1 and 4.
 
-	The `accurate_mode_threshold`. If there are more than this number of orders still left uncut, the accurate mode is not activated and `accurate_level` does nothing. This machenism is to reduce time of calculation.
+	The `accurate_mode_threshold`. If there are more than this number of orders still left uncut, the accurate mode is not activated and `accurate_level` does nothing. This mechanism is to reduce the time of calculation.
 
 Example Output
 -------------------------
