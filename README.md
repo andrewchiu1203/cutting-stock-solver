@@ -1,7 +1,9 @@
 Cutting Stock Solver
 -------------------------
 
-This is a personal coding project that I thought would be interesting to do when one of my friend's parent, who's running a stell processing factory, was talking about this problem to me. The code isn't thoroughly tested and still has many bugs, but it's still fun to write.
+This is a personal coding project that I thought would be interesting to do when one of my friend's parent, who's running a stell processing factory, was talking about this problem to me. The code isn't thoroughly tested and still has many bugs, but it's still fun to write.<be>
+
+All the unit for length here is meter (m).
 
 ### Features
 
