@@ -26,13 +26,13 @@ This is a personal coding project that I thought would be interesting to do when
 	`"slot name" : [ min allowed length, max allowed length ], ... ]`
 
     For dict `slot_occupied`, follow
-	`{ "slot name" : 0, "slot name" : 0, "slot name" : 0, ... }` 
+	`{ "slot name" : 0, "slot name" : 0, "slot name" : 0, ... }`<br>
     *Note: All slot names in `slot_range` need to be in this dict with value init as 0.*
 
     For dict `combined_slot_range`, follow
 	`{ "slot_name1 slot_name2" : [ min allowed length, max allowed length ],`
-	`"slot_name1 slot_name2" : [ min allowed length, max allowed length ], ... }`
-    *Note: The 2 slot names with 1 space in between are the slots that can be combined.* 
+	`"slot_name1 slot_name2" : [ min allowed length, max allowed length ], ... }`<br>
+    *Note: The 2 slot names with 1 space in between are the slots that can be combined.*<br>
     *Note: If you do not wish to have any slots combined, leave this dict empty.*
 
 - In sample_data.py, set `original_stock_len` to a int that defines the length of the original uncut rebars that were to pass through the cutting machine.
