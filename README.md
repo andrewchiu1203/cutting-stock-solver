@@ -1,37 +1,41 @@
 Cutting Stock Solver
 -------------------------
 
-This is a personal coding project that I though would be interesting to do when one of my friend's parent, who's running a stell processing factory, was talking about this problem to me. The code isn't thoroughly tested and still has many bugs, but it's still fun to write.
+This is a personal coding project that I thought would be interesting to do when one of my friend's parent, who's running a stell processing factory, was talking about this problem to me. The code isn't thoroughly tested and still has many bugs, but it's still fun to write.
 
 ### Features
 
-- Minimizes wasted stock when different length of rebars of different quantities are cut from fixed-length rebars.
-- Rebars are grouped by order number, or "stock nuber" as what's called in the source code.
-- Slots (rooms) to place the cut rebars immediatelly after they are processed can be setup by specifying a slot name, its minimum allowed length, and maximum allowed length.
-- 2 Slots can be combined into 1 slots to accomedate longer cuts if you choose to set it up.
+- Minimizes wasted stock when different lengths of rebars of different quantities are cut from fixed-length rebars.
+- Rebars are grouped by order number, or "stock_number" as what's called in the source code.
+- Slots (rooms) to place the cut rebars immediately after they are processed can be set up by specifying a slot name, its minimum allowed length, and maximum allowed length.
+- 2 Slots can be combined into 1 slot to accommodate longer cuts if you choose to set it up.
 
 ### How to Setup
-- In sample_data.py, setup the 2 PARALLEL LIST (important).
+- In sample_data.py, set up the 2 PARALLEL LIST (important).
+
     For list `required_length`, follow
     `[ [ order number, length ], [ order number, length ], ... ]`
 
     For list `required_number`, follow
     `[ [ order number, quantity ], [ order number, quantity ], ... ]`
 
-- In sample_data.py, setup 1 list and 2 dictionary related to slot room.
+- In sample_data.py, set up 1 list and 2 dictionary related to slot room.
+
     For list `slot_range`, follow
     `["slot name" : [ min allowed length, max allowed length ], `
 	`"slot name" : [ min allowed length, max allowed length ], ... ]`
 
     For dict `slot_occupied`, follow
 	`{ "slot name" : 0, "slot name" : 0, "slot name" : 0, ... }` 
-	*Note: All slot names in `slot_range` needs to be in this dict with value init as 0.*
+
+        *Note: All slot names in `slot_range` need to be in this dict with value init as 0.*
 
     For dict `combined_slot_range`, follow
 	`{ "slot_name1 slot_name2" : [ min allowed length, max allowed length ],`
 	`"slot_name1 slot_name2" : [ min allowed length, max allowed length ], ... }`
-	*Note: The 2 slot names with 1 space in between are the slots that can be combined.* 
-	*Note: If you do not wish to have any slots combine, leave this dict empty.*
+
+        *Note: The 2 slot names with 1 space in between are the slots that can be combined.* 
+	*Note: If you do not wish to have any slots combined, leave this dict empty.*
 
 - In sample_data.py, set `original_stock_len` to a int that defines the length of the original uncut rebars that were to pass through the cutting machine.
 - In sample_data.py, set `machine_max_throughput` to a int that defines the maximum quantity of uncut rebars that can pass through the cutting machine at one time.
