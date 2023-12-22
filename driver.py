@@ -1,4 +1,4 @@
-from parameter import \
+from sample_data import \
     required_length, required_number, combined_slot_range,\
     machine_max_throughput, slot_range, slot_occupied, original_stock_len
     
