@@ -1,6 +1,5 @@
-import heavy_stock_solver as hss
+# Changing numbers here affects what's read by stock_solver.py
 
-# # #  parameter sample  # # #
 required_length = [
 [1, 3.7], [1, 3.1], [2, 2.6], [2, 2.0], [3, 8.0], [3, 4.0], [4, 7.0], [5, 7.0], [6, 7.0], [7, 7.0], [8, 7.0],
 [9, 7.0], [10, 7.0], [11, 7.0], [12, 7.0], [13, 4.0], [13, 3.0], [14, 12.0], [14, 10.4], [14, 9.7], [14, 9.3],
@@ -21,7 +20,7 @@ required_length = [
 ]
 
 required_number = [
-[1, 56], [1, 56], [2, 118], [2, 118], [3, 7], [3, 7], [4, 84], [5, 84], [6, 84], [7, 84], [8, 90],
+[1, 12], [1, 12], [2, 118], [2, 118], [3, 7], [3, 7], [4, 84], [5, 84], [6, 84], [7, 84], [8, 90],
 [9, 71], [10, 72], [11, 71], [12, 72], [13, 44], [13, 33], [14, 6], [14, 4], [14, 5], [14, 12],
 [15, 7], [15, 3], [15, 7], [15, 3], [15, 3], [16, 15], [16, 13], [16, 18], [16, 3], [16, 2],
 [16, 8], [17, 5], [17, 3], [17, 3], [17, 3], [18, 3], [18 ,3], [18, 9], [18, 9], [18, 3],
@@ -38,52 +37,13 @@ required_number = [
 [59, 24], [59, 2], [59, 30], [59, 2], [60, 73], [61, 73], [62, 8], [63, 9], [63, 20], [64, 40],
 [64, 48], [65, 6], [65, 28], [65, 57], [66, 31], [67, 12], [68, 3], [68, 6], [68, 3]
 ]
-# 56 1.7 -> 1.2
-# 68 3.0 -> 2.8
 
 slot_range = {"A" :[2.8, 6.9], "A2":[2.8, 8.6], "B" :[2.8, 6.9], "B2":[2.8, 8.5], "C1":[2.0, 5.0], 
               "C2":[2.0, 4.0], "D1":[2.0, 5.0], "D2":[1.7, 4.0], "E" :[1.2, 2.8], "F" :[0.8, 2.8]}
-combined_slot_range = {"A":"A2", "B":"B2", "C1":"C2", "D1":"D2"}
-original_stock_len = 16
-machine_max_throughput = 18
-wanted_spare_len = {}
-wanted_spare_range = [2.0, 5.0]
+
 slot_occupied = {"A":0, "A2":0, "B":0, "B2":0, "C1":0, "C2":0, "D1":0, "D2":0, "E":0, "F":0}
-# # #  parameter sample  # # #
 
-def main():
-    ''' [[stock_num 1, length 1], [stock_num 2, length 2] ...] '''
-    hss.set_required_length(required_length)
+combined_slot_range = {"A A2":[2.8, 15.5], "B B2":[2.8, 15.4], "C1 C2":[2, 9], "D1 D2":[1.7, 9]}
 
-    ''' [[stock_num 1, quantity 1], [stock_num 2, quantity 2] ...] '''
-    hss.set_required_number(required_number)
-
-    ''' {"Slot name 1" : [min length, max length], "Slot name2 " : [min length, max length] ... } '''
-    hss.set_slot_range(slot_range)
-
-    ''' {"slot name 1" : "slot that combine with it", "slot name 2" : "slot that can combined with it" ...} ''' 
-    hss.set_combined_slot_range(combined_slot_range)
-
-    ''' integer length in meter '''
-    hss.set_original_stock_len(original_stock_len)
-
-    ''' integer quantity that dertermines max stock quantity throuch machine at once '''
-    hss.set_machine_max_throughput(machine_max_throughput)
-
-    ''' {-1 : "spare len 1", -2 : "spare len 2", -3: : "spare len 3", -4 : "spare len 4"} '''
-    hss.set_wanted_spare_len(wanted_spare_len)
-
-    ''' ["min length allowed as spare", "max length allowed as spare"] '''
-    hss.set_wanted_spare_range(wanted_spare_range)
-
-    ''' {"Slot 1" : 0, "Slot 2 " : 0, "Slot 3" : 0 ... } '''
-    hss.init_slot_occupied(slot_occupied)
-
-    hss.to_use_wanted_spare(True)
-
-    # result = hss.solve(display_step=False)
-    hss.solve(display_step=True)
-    hss.display_result()
-
-if __name__ == "__main__":
-    main()
+original_stock_len = 14
+machine_max_throughput = 18
