@@ -451,7 +451,7 @@ def write_output_to_txt(outputs, ideal_stock_input, real_stock_input, by_stock_n
             file.write("{}-{} | ".format(slot_name, status))
     
     file.write("\n\n")
-    file.write("Current Stock Info [stock number, remain number, id]:\n")
+    file.write("Current Stock Info [order number, remain number, id]:\n")
     for stock_num, stocks in by_stock_num.items():
         file.write("{} : {}\n".format(stock_num, stocks))
     file.close()
