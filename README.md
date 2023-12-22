@@ -27,15 +27,13 @@ This is a personal coding project that I thought would be interesting to do when
 
     For dict `slot_occupied`, follow
 	`{ "slot name" : 0, "slot name" : 0, "slot name" : 0, ... }` 
-
-        *Note: All slot names in `slot_range` need to be in this dict with value init as 0.*
+    *Note: All slot names in `slot_range` need to be in this dict with value init as 0.*
 
     For dict `combined_slot_range`, follow
 	`{ "slot_name1 slot_name2" : [ min allowed length, max allowed length ],`
 	`"slot_name1 slot_name2" : [ min allowed length, max allowed length ], ... }`
-
-        *Note: The 2 slot names with 1 space in between are the slots that can be combined.* 
-	*Note: If you do not wish to have any slots combined, leave this dict empty.*
+    *Note: The 2 slot names with 1 space in between are the slots that can be combined.* 
+    *Note: If you do not wish to have any slots combined, leave this dict empty.*
 
 - In sample_data.py, set `original_stock_len` to a int that defines the length of the original uncut rebars that were to pass through the cutting machine.
 - In sample_data.py, set `machine_max_throughput` to a int that defines the maximum quantity of uncut rebars that can pass through the cutting machine at one time.
