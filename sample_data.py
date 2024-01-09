@@ -45,5 +45,5 @@ slot_occupied = {"A":0, "A2":0, "B":0, "B2":0, "C1":0, "C2":0, "D1":0, "D2":0, "
 
 combined_slot_range = {"A A2":[2.8, 15.5], "B B2":[2.8, 15.4], "C1 C2":[2, 9], "D1 D2":[1.7, 9]}
 
-original_stock_len = 14
+original_stock_len = 16
 machine_max_throughput = 18
